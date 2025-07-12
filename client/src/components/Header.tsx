@@ -4,10 +4,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Bell, ArrowRightLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 
 export function Header() {
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
+
+  // Fetch pending swap requests for notifications
+  const { data: pendingSwaps } = useQuery({
+    queryKey: ['/api/swaps/received'],
+    enabled: isAuthenticated,
+  });
 
   const getInitials = (firstName?: string, lastName?: string) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
@@ -61,12 +68,16 @@ export function Header() {
           {/* User Menu */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="h-5 w-5 text-gray-400" />
-              <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs">
-                2
-              </Badge>
-            </Button>
+            <Link href="/swaps">
+              <Button variant="ghost" size="sm" className="relative">
+                <Bell className="h-5 w-5 text-gray-400" />
+                {pendingSwaps && pendingSwaps.length > 0 && (
+                  <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs">
+                    {pendingSwaps.length}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
 
             {/* User Avatar */}
             <Link href="/profile">
