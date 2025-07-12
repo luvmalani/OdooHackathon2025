@@ -1,0 +1,678 @@
+: Skill Swap Platform
+
+```
+##############################################
+#  SKILL SWAP PLATFORM — COMPLETE SPECIFICATION
+#  Backend: Python 3.11 + FastAPI 0.110      
+#  Frontend: React 18 + TypeScript           
+#  Database: PostgreSQL 15 + SQLAlchemy 2    
+#  Real-time: FastAPI WebSockets             
+#  Auth: JWT + bcrypt                        
+#  AI Features: Skill matching algorithm     
+#  Mockup Compliance: 6-screen layout        
+##############################################
+
+BUILD A COMPLETE SKILL SWAP PLATFORM WHERE USERS EXCHANGE SKILLS WITH EACH OTHER
+
+HACKATHON COMPLIANCE REQUIREMENTS:
+✅ Database Design (35%): Proper schema, relationships, real-time sync
+✅ Coding Standards (40%): Validation, modularity, performance, error handling
+✅ UI/UX Design (15%): Responsive, pagination, search/filter, proper colors
+✅ Team Collaboration (10%): Git usage, documentation
+
+PROJECT STRUCTURE:
+----------------------------------------------
+backend/
+  app/
+    main.py              # FastAPI app entry
+    config.py            # Environment config
+    database.py          # SQLAlchemy setup
+    models/
+      user.py            # User model
+      skill.py           # Skill model  
+      swap.py            # Swap request model
+      rating.py          # Rating model
+    schemas/
+      user.py            # Pydantic schemas
+      skill.py           # Request/response models
+      swap.py            # Validation schemas
+      rating.py          # Data transfer objects
+    api/routers/
+      auth.py            # Authentication endpoints
+      users.py           # User management
+      skills.py          # Skill operations
+      swaps.py           # Swap management
+      ratings.py         # Rating system
+      admin.py           # Admin functions
+      websocket.py       # Real-time connections
+    services/
+      auth_service.py    # Authentication logic
+      email_service.py   # Email notifications
+      ai_matching.py     # Skill recommendation AI
+      websocket_manager.py # Real-time manager
+    core/
+      security.py        # JWT, hashing utilities
+      utils.py           # Helper functions
+    tests/
+      test_auth.py       # Authentication tests
+      test_swaps.py      # Swap workflow tests
+      test_api.py        # API endpoint tests
+  alembic/             # Database migrations
+  requirements.txt     # Python dependencies
+  Dockerfile          # Container config
+
+frontend/
+  src/
+    components/
+      auth/
+        LoginForm.tsx    # Screen 2 - Login page
+        SignupForm.tsx   # User registration
+      profile/
+        ProfileView.tsx  # Screen 3 - User profile
+        ProfileEdit.tsx  # Screen 5 - Profile editor
+      skills/
+        SkillManager.tsx # Skill management
+      swaps/
+        SwapDashboard.tsx # Screen 4 - Swap management
+        SwapRequest.tsx  # Swap request modal
+      discovery/
+        UserGrid.tsx     # Screen 1 - User discovery
+        UserCard.tsx     # Individual user cards
+        SearchBar.tsx    # Search functionality
+      admin/
+        AdminPanel.tsx   # Screen 6 - Admin dashboard
+      common/
+        Header.tsx       # Navigation header
+        Pagination.tsx   # Page controls
+        LoadingSpinner.tsx
+        ErrorBoundary.tsx
+    services/
+      api.ts            # API client
+      websocket.ts      # WebSocket connection
+      auth.ts           # Authentication service
+    utils/
+      validation.ts     # Form validation
+      constants.ts      # App constants
+    types/
+      user.ts           # TypeScript interfaces
+      skill.ts          # Type definitions
+      swap.ts           # Data models
+
+docker-compose.yml
+.env.example
+README.md
+
+PYTHON DEPENDENCIES (requirements.txt):
+----------------------------------------------
+fastapi==0.110.*
+uvicorn[standard]==0.24.*
+sqlalchemy==2.0.*
+alembic==1.13.*
+psycopg2-binary==2.9.*
+python-jose[cryptography]==3.3.*
+passlib[bcrypt]==1.7.*
+pydantic==2.5.*
+python-multipart==0.0.6
+fastapi-mail==1.4.*
+redis==5.0.*
+websockets==12.0
+python-dotenv==1.0.*
+scikit-learn==1.3.*
+pandas==2.1.*
+pytest==7.4.*
+pytest-asyncio==0.21.*
+httpx==0.25.*
+
+DATABASE SCHEMA (PostgreSQL):
+----------------------------------------------
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Users table
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    location VARCHAR(255),
+    profile_photo_url TEXT,
+    is_profile_public BOOLEAN DEFAULT TRUE,
+    availability JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
+    email_verified BOOLEAN DEFAULT FALSE,
+    last_login TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Skills catalog
+CREATE TABLE skills (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    description TEXT,
+    is_approved BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- User skills offered
+CREATE TABLE user_skills_offered (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
+    proficiency_level VARCHAR(20) CHECK (proficiency_level IN ('beginner','intermediate','advanced','expert')),
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, skill_id)
+);
+
+-- User skills wanted
+CREATE TABLE user_skills_wanted (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
+    urgency_level VARCHAR(10) CHECK (urgency_level IN ('low','medium','high')),
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, skill_id)
+);
+
+-- Swap requests
+CREATE TYPE swap_status AS ENUM ('pending','accepted','rejected','completed','cancelled');
+CREATE TABLE swap_requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    requester_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    target_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    requester_skill_id UUID REFERENCES skills(id),
+    target_skill_id UUID REFERENCES skills(id),
+    message TEXT,
+    status swap_status DEFAULT 'pending',
+    scheduled_at TIMESTAMPTZ,
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT no_self_swap CHECK (requester_id != target_id)
+);
+
+-- Ratings and feedback
+CREATE TABLE ratings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    swap_id UUID REFERENCES swap_requests(id) ON DELETE CASCADE,
+    rater_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    ratee_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+    feedback TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(swap_id, rater_id)
+);
+
+-- Admin actions log
+CREATE TABLE admin_actions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    admin_id UUID REFERENCES users(id),
+    action_type VARCHAR(50) NOT NULL,
+    target_type VARCHAR(50) NOT NULL,
+    target_id UUID NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Performance indexes
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_active ON users(is_active);
+CREATE INDEX idx_skills_category ON skills(category);
+CREATE INDEX idx_skills_name ON skills(name);
+CREATE INDEX idx_user_skills_offered_user ON user_skills_offered(user_id);
+CREATE INDEX idx_user_skills_wanted_user ON user_skills_wanted(user_id);
+CREATE INDEX idx_swap_requests_status ON swap_requests(status);
+CREATE INDEX idx_swap_requests_target ON swap_requests(target_id);
+CREATE INDEX idx_swap_requests_requester ON swap_requests(requester_id);
+CREATE INDEX idx_ratings_ratee ON ratings(ratee_id);
+
+FASTAPI BACKEND ENDPOINTS:
+----------------------------------------------
+# Authentication (auth.py)
+POST   /api/auth/register           # User registration
+POST   /api/auth/login              # OAuth2 password flow  
+POST   /api/auth/refresh            # Refresh JWT token
+POST   /api/auth/logout             # Invalidate tokens
+POST   /api/auth/forgot-password    # Password reset request
+POST   /api/auth/reset-password     # Complete password reset
+GET    /api/auth/verify-email/{token} # Email verification
+GET    /api/auth/me                 # Current user info
+
+# User Management (users.py)
+GET    /api/users/search            # Query: ?skill=&location=&page=&size=
+GET    /api/users/{user_id}         # Public profile view
+GET    /api/users/profile           # Own profile (authenticated)
+PUT    /api/users/profile           # Update profile
+DELETE /api/users/profile           # Delete account
+POST   /api/users/upload-photo      # Profile photo upload
+GET    /api/users/recommendations   # AI-powered skill matches
+
+# Skills Management (skills.py)  
+GET    /api/skills                  # All available skills
+POST   /api/skills                  # Create new skill (admin)
+GET    /api/skills/categories       # Skill categories
+GET    /api/skills/search           # Search skills by name
+POST   /api/users/skills/offered    # Add offered skill
+GET    /api/users/skills/offered    # Get user's offered skills
+DELETE /api/users/skills/offered/{skill_id} # Remove offered skill
+POST   /api/users/skills/wanted     # Add wanted skill
+GET    /api/users/skills/wanted     # Get user's wanted skills  
+DELETE /api/users/skills/wanted/{skill_id}  # Remove wanted skill
+
+# Swap Management (swaps.py)
+POST   /api/swaps/request           # Create swap request
+GET    /api/swaps/sent              # User's sent requests
+GET    /api/swaps/received          # User's received requests
+GET    /api/swaps/{swap_id}         # Get swap details
+PUT    /api/swaps/{swap_id}/accept  # Accept swap request
+PUT    /api/swaps/{swap_id}/reject  # Reject swap request
+PUT    /api/swaps/{swap_id}/complete # Mark swap as completed
+DELETE /api/swaps/{swap_id}         # Cancel/delete swap request
+PUT    /api/swaps/{swap_id}/schedule # Schedule swap meeting
+
+# Ratings (ratings.py)
+POST   /api/ratings                 # Submit rating/feedback
+GET    /api/ratings/received        # Ratings received by user
+GET    /api/ratings/given           # Ratings given by user
+GET    /api/users/{user_id}/ratings # Public ratings for user
+
+# Admin (admin.py)
+GET    /api/admin/users             # User management dashboard
+PUT    /api/admin/users/{user_id}/ban # Ban user
+PUT    /api/admin/users/{user_id}/unban # Unban user
+DELETE /api/admin/skills/{skill_id} # Delete skill
+GET    /api/admin/swap-requests     # Monitor all swaps
+GET    /api/admin/reports           # Platform analytics
+POST   /api/admin/announcements     # Platform announcements
+GET    /api/admin/pending-skills    # Skills awaiting approval
+
+# WebSocket (websocket.py)
+/ws/{user_id}                       # Real-time connection per user
+
+FRONTEND SCREENS (React + TypeScript):
+----------------------------------------------
+SCREEN 1: Home/User Discovery (UserGrid.tsx)
+- Header with platform logo and user menu
+- Search bar with skill filter dropdown ("Community" selector)
+- 3-column responsive grid of user cards
+- Each card shows: circular profile photo, name, location, offered skills (tags), "Request Swap" button
+- Bottom pagination controls (1, 2, 3, 4, 5, 6, 7, >)
+- Real-time updates when new users join
+
+SCREEN 2: Login Page (LoginForm.tsx)  
+- Centered login form with email/password fields
+- "Remember me" checkbox
+- "Forgot password?" link
+- Social login buttons (Google, GitHub)
+- Link to signup page
+- Form validation with error messages
+
+SCREEN 3: User Profile View (ProfileView.tsx)
+- Profile photo and basic info display
+- Offered skills section with proficiency indicators
+- Wanted skills section with urgency levels
+- Average rating with star display
+- Recent feedback/testimonials
+- "Request Swap" button (if viewing another user)
+- "Edit Profile" button (if viewing own profile)
+
+SCREEN 4: Swap Request Management (SwapDashboard.tsx)
+- Tabbed interface: "Received Requests" and "Sent Requests"
+- Request cards showing other user info, skills involved, message
+- Action buttons: Accept, Reject, Cancel, View Details
+- Status indicators: Pending, Accepted, Rejected, Completed
+- Real-time updates for new requests and status changes
+
+SCREEN 5: Profile Editor (ProfileEdit.tsx)
+- Form fields for name, location, bio
+- Profile photo upload with preview
+- Skills management sections:
+  - "Skills I Offer" with add/remove functionality
+  - "Skills I Want" with add/remove functionality
+- Availability scheduler component
+- Privacy settings toggle
+- Save/Cancel buttons
+
+SCREEN 6: Admin Dashboard (AdminPanel.tsx)
+- User management table with ban/unban actions
+- Skill approval queue
+- Swap request monitoring
+- Platform statistics dashboard
+- Announcement creation form
+- Content moderation tools
+
+REAL-TIME WEBSOCKET FEATURES:
+----------------------------------------------
+WebSocket Events:
+- user_connected / user_disconnected
+- new_swap_request (notify target user)
+- swap_status_update (accept/reject/complete)
+- skill_match_found (AI recommendation)
+- admin_announcement (platform-wide message)
+
+WebSocketManager class handles:
+- Connection mapping (user_id -> websocket)
+- Message broadcasting to specific users
+- Connection cleanup on disconnect
+- Redis pub/sub for multi-instance scaling
+
+AI/ML VALUE-ADDED FEATURES:
+----------------------------------------------
+Skill Matching Algorithm (ai_matching.py):
+- TF-IDF vectorization of user skill profiles
+- Cosine similarity for complementary skill detection
+- Location proximity scoring
+- Availability overlap analysis
+- Learning from successful swap patterns
+- Recommendation endpoint: GET /api/users/recommendations
+
+Smart Skill Categorization:
+- NLP-based automatic skill categorization
+- Skill synonym detection and merging
+- Tag suggestion based on skill descriptions
+- Trending skills analysis
+
+Content Moderation:
+- Inappropriate content detection in profiles
+- Spam request pattern recognition
+- Fake profile detection algorithms
+- Automated flagging system
+
+VALIDATION AND SECURITY:
+----------------------------------------------
+Pydantic Validation Schemas:
+- Email format and uniqueness validation
+- Password strength requirements (8+ chars, mixed case, numbers)
+- Skill name length and format validation
+- Profile photo size and type restrictions
+- Input sanitization for XSS prevention
+
+Security Measures:
+- JWT tokens: 30min access, 7-day refresh
+- bcrypt password hashing (12 rounds)
+- Rate limiting: 5 req/min on auth endpoints
+- CORS whitelist configuration
+- File upload security (type/size validation)
+- SQL injection prevention via SQLAlchemy ORM
+- Input sanitization for all user data
+
+ERROR HANDLING:
+----------------------------------------------
+Backend Error Responses:
+```
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input data",
+    "details": [
+      {"field": "email", "message": "Email already exists"}
+    ],
+    "timestamp": "2025-07-12T12:21:00Z"
+  }
+}
+```
+
+Frontend Error Handling:
+- Form validation with real-time feedback
+- Network error retry with exponential backoff
+- Offline state detection and queueing
+- User-friendly error toast notifications
+- Loading states for all async operations
+- Error boundaries for component failures
+
+UI/UX SPECIFICATIONS:
+----------------------------------------------
+Design System:
+- Primary color: #4C6EF5 (blue)
+- Secondary color: #12B886 (green)
+- Background: #F8F9FA (light gray)
+- Text: #343A40 (dark gray)
+- Error: #E03131 (red)
+- Success: #51CF66 (green)
+
+Responsive Breakpoints:
+- Mobile: 320px - 768px (1 column grid)
+- Tablet: 768px - 1024px (2 column grid)  
+- Desktop: 1024px+ (3 column grid)
+
+Component Library: Material-UI v5
+- Consistent button styles and states
+- Form inputs with proper validation styling
+- Modal dialogs for swap requests
+- Toast notifications for feedback
+- Loading skeletons for better UX
+
+Navigation:
+- Breadcrumb navigation on all pages
+- Pagination with page numbers and navigation arrows
+- Search autocomplete with debounced input
+- Filter dropdowns with multi-select options
+
+PERFORMANCE OPTIMIZATION:
+----------------------------------------------
+Database:
+- Connection pooling (max 20 connections)
+- Query optimization with proper joins
+- Database query caching for skills data
+- Pagination for all list queries
+
+Frontend:
+- React.lazy() for code splitting
+- Image lazy loading and compression
+- Service worker for offline caching
+- Debounced search (300ms delay)
+- Virtual scrolling for large lists
+- Bundle size optimization
+
+Caching Strategy:
+- Redis for session and user data
+- Browser localStorage for user preferences
+- CDN for static assets and images
+- API response caching for read-heavy endpoints
+
+TESTING REQUIREMENTS:
+----------------------------------------------
+Backend Testing (pytest):
+```
+# Unit tests
+test_password_hashing()
+test_jwt_token_creation()
+test_skill_matching_algorithm()
+test_validation_schemas()
+
+# Integration tests  
+test_user_registration_flow()
+test_swap_request_lifecycle()
+test_websocket_notifications()
+test_admin_user_management()
+
+# API tests
+test_auth_endpoints()
+test_crud_operations()
+test_error_handling()
+test_rate_limiting()
+```
+
+Frontend Testing (Jest + RTL):
+- Component unit tests
+- Integration tests for user flows
+- E2E tests with Playwright
+- Accessibility testing
+- Performance testing
+
+Coverage Target: >90% for all backend code
+
+DEPLOYMENT CONFIGURATION:
+----------------------------------------------
+Environment Variables (.env):
+```
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/skillswap
+REDIS_URL=redis://localhost:6379
+
+# Security
+JWT_SECRET_KEY=your-secret-key-here
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# Email
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+
+# Upload
+MAX_UPLOAD_SIZE=5242880
+UPLOAD_DIR=./uploads
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:3000,https://yourapp.com
+```
+
+Docker Compose:
+```
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports: ["8000:8000"]
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/skillswap
+    depends_on: [db, redis]
+    
+  frontend:
+    build: ./frontend  
+    ports: ["3000:3000"]
+    
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: skillswap
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+```
+
+DEVELOPMENT COMMANDS:
+----------------------------------------------
+Backend Setup:
+```
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Frontend Setup:
+```
+cd frontend
+npm install
+npm start
+```
+
+Testing:
+```
+# Backend tests
+pytest -v --cov=app --cov-report=html
+
+# Frontend tests  
+npm test -- --coverage
+```
+
+Production Deployment:
+```
+docker-compose up --build -d
+docker-compose logs -f
+```
+
+IMPLEMENTATION PRIORITY:
+----------------------------------------------
+Phase 1 (Core - 3 hours):
+1. Database schema and models
+2. Authentication system
+3. Basic CRUD API endpoints
+4. User registration and login UI
+
+Phase 2 (Features - 3 hours):
+5. Profile management
+6. Skills management  
+7. User discovery and search
+8. Swap request system
+
+Phase 3 (Advanced - 2 hours):
+9. Real-time WebSocket notifications
+10. Rating and feedback system
+11. AI skill matching recommendations
+12. Admin dashboard
+
+CODE QUALITY REQUIREMENTS:
+----------------------------------------------
+Linting:
+- Backend: flake8, black, isort
+- Frontend: ESLint, Prettier
+- Pre-commit hooks for automatic formatting
+
+Documentation:
+- API documentation via FastAPI OpenAPI
+- Component documentation with Storybook
+- README with setup instructions
+- Architecture decision records
+
+Git Workflow:
+- Feature branches for all changes
+- Pull request reviews required
+- Automated testing on all commits
+- Semantic commit messages
+
+FINAL DELIVERABLES CHECKLIST:
+----------------------------------------------
+✅ Complete working application
+✅ All 6 screens implemented per mockup
+✅ Database schema with proper relationships
+✅ Real-time WebSocket functionality
+✅ AI-powered skill recommendations
+✅ Comprehensive input validation
+✅ Error handling and user feedback
+✅ Responsive design across devices
+✅ Search, filter, and pagination
+✅ Admin moderation capabilities
+✅ Docker deployment configuration
+✅ Test coverage >90%
+✅ Performance optimizations
+✅ Security best practices
+✅ Documentation and README
+✅ Git repository with proper commits
+
+BUILD INSTRUCTIONS:
+Generate a complete, production-ready Skill Swap Platform following this exact specification. Ensure every component, endpoint, and feature is fully implemented and functional. The application must be ready for immediate deployment and demonstration.
+
+COPY THIS ENTIRE SPECIFICATION AND PASTE INTO YOUR AI CODING PLATFORM TO GENERATE THE COMPLETE SKILL SWAP PLATFORM.
+```
+
+This comprehensive prompt incorporates everything you've requested:
+
+- **Python FastAPI backend** as specifically requested
+- **Complete alignment with your 6-screen mockup**
+- **Full hackathon compliance** for all review criteria
+- **AI/ML features** that add genuine value (skill matching, content moderation)
+- **Real-time WebSocket functionality** for live updates
+- **Complete database schema** with proper relationships
+- **Comprehensive API specification** with all endpoints
+- **Frontend component mapping** to your exact wireframe screens
+- **Security and validation** throughout the application
+- **Performance optimization** strategies
+- **Testing requirements** for quality assurance
+- **Deployment configuration** for immediate use
+
