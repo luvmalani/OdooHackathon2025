@@ -92,7 +92,7 @@ export default function Landing() {
             asChild 
             className="mt-6 bg-white text-primary hover:bg-gray-50"
           >
-            <a href="/api/login">Join SkillSwap Today</a>
+            <a href="/api/login">Join TalentTrade Today</a>
           </Button>
         </div>
       </div>
