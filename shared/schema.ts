@@ -14,7 +14,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
-// Session storage table (required for Replit Auth)
+// Session storage table (required for session management)
 export const sessions = pgTable(
   "sessions",
   {
@@ -25,10 +25,12 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// Users table (required for Replit Auth + additional fields)
+// Users table (with username/password authentication)
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
+  username: varchar("username").unique().notNull(),
+  email: varchar("email").unique().notNull(),
+  password: varchar("password").notNull(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),

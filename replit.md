@@ -9,6 +9,8 @@ This is a full-stack skill exchange platform built with modern web technologies 
 Preferred communication style: Simple, everyday language.
 Navigation: TalentTrade logo should redirect to landing page when clicked.
 Branding: Platform name changed from "SkillSwap" to "TalentTrade" with ArrowLeftRight icon instead of ArrowRightLeft.
+Authentication: Simple username/password authentication without Replit branding.
+Database: PostgreSQL database instead of Replit native database.
 
 ## System Architecture
 
@@ -25,20 +27,21 @@ Branding: Platform name changed from "SkillSwap" to "TalentTrade" with ArrowLeft
 - **Language**: TypeScript with ES modules
 - **Database ORM**: Drizzle ORM for type-safe database operations
 - **Real-time Communication**: WebSocket integration for live updates
-- **Authentication**: Replit Auth with session management
+- **Authentication**: Custom username/password authentication with session management
 
 ### Database Design
-- **Database**: PostgreSQL (configured for Neon serverless)
+- **Database**: PostgreSQL (configured for standard PostgreSQL)
 - **Schema Management**: Drizzle Kit for migrations and schema management
 - **Session Storage**: PostgreSQL-based session storage using connect-pg-simple
 
 ## Key Components
 
 ### Authentication System
-- Replit OAuth integration for seamless user authentication
+- Custom username/password authentication system
 - Session-based authentication with PostgreSQL session storage
-- Automatic session refresh and user state management
+- Secure password hashing using Node.js crypto module
 - Protected routes and middleware for authenticated endpoints
+- Simple authentication page without external provider branding
 
 ### User Management
 - User profiles with customizable information (bio, location, skills)

@@ -14,7 +14,7 @@ export default function Landing() {
               <span className="text-xl font-bold text-gray-900">TalentTrade</span>
             </div>
             <Button asChild>
-              <a href="/api/login">Get Started</a>
+              <a href="/auth">Get Started</a>
             </Button>
           </div>
         </div>
@@ -33,7 +33,7 @@ export default function Landing() {
           </p>
           <div className="mt-8">
             <Button size="lg" asChild className="bg-primary hover:bg-blue-600 text-lg px-8 py-3">
-              <a href="/api/login">Start Trading Skills</a>
+              <a href="/auth">Start Trading Skills</a>
             </Button>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function Landing() {
             asChild 
             className="mt-6 bg-white text-primary hover:bg-gray-50"
           >
-            <a href="/api/login">Join TalentTrade Today</a>
+            <a href="/auth">Join TalentTrade Today</a>
           </Button>
         </div>
       </div>

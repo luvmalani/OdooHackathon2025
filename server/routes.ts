@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import {
   insertSkillSchema,
   insertUserSkillOfferedSchema,
@@ -43,19 +43,14 @@ const wsManager = new WebSocketManager();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Note: Auth routes are now handled in auth.ts
+  // The following routes are available:
+  // POST /api/register - Register new user
+  // POST /api/login - Login user
+  // POST /api/logout - Logout user
+  // GET /api/user - Get current user
 
   // User routes
   app.get('/api/users/search', async (req, res) => {
@@ -103,7 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/users/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const userData = req.body;
       
       const updatedUser = await storage.upsertUser({
@@ -164,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User skills routes
   app.get('/api/users/skills/offered', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const skills = await storage.getUserSkillsOffered(userId);
       res.json(skills);
     } catch (error) {
@@ -175,7 +170,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/users/skills/offered', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const skillData = insertUserSkillOfferedSchema.parse({
         ...req.body,
         userId,
@@ -190,7 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/users/skills/offered/:skillId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { skillId } = req.params;
       await storage.removeUserSkillOffered(userId, skillId);
       res.json({ message: "Skill removed successfully" });
@@ -202,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/users/skills/wanted', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const skills = await storage.getUserSkillsWanted(userId);
       res.json(skills);
     } catch (error) {
@@ -213,7 +208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/users/skills/wanted', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const skillData = insertUserSkillWantedSchema.parse({
         ...req.body,
         userId,
@@ -228,7 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/users/skills/wanted/:skillId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { skillId } = req.params;
       await storage.removeUserSkillWanted(userId, skillId);
       res.json({ message: "Skill removed successfully" });
@@ -241,7 +236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Swap routes
   app.post('/api/swaps/request', isAuthenticated, async (req: any, res) => {
     try {
-      const requesterId = req.user.claims.sub;
+      const requesterId = req.user.id;
       const swapData = insertSwapRequestSchema.parse({
         ...req.body,
         requesterId,
@@ -264,7 +259,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/swaps/sent', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const swaps = await storage.getUserSwapsSent(userId);
       res.json(swaps);
     } catch (error) {
@@ -275,7 +270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/swaps/received', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const swaps = await storage.getUserSwapsReceived(userId);
       res.json(swaps);
     } catch (error) {
@@ -288,7 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { swapId } = req.params;
       const { status } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const swap = await storage.getSwapRequest(swapId);
       if (!swap) {
@@ -319,7 +314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rating routes
   app.post('/api/ratings', isAuthenticated, async (req: any, res) => {
     try {
-      const raterId = req.user.claims.sub;
+      const raterId = req.user.id;
       const ratingData = insertRatingSchema.parse({
         ...req.body,
         raterId,
