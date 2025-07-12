@@ -7,6 +7,7 @@ This is a full-stack skill exchange platform built with modern web technologies.
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Navigation: SkillSwap logo should redirect to landing page when clicked.
 
 ## System Architecture
 
