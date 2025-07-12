@@ -21,9 +21,9 @@ This is a full-stack skill exchange platform built with modern web technologies 
 - **Build Tool**: Vite with custom configuration for development and production
 
 ### Backend Architecture
-- **Runtime**: Node.js with Express.js
-- **Language**: TypeScript with ES modules
-- **Database ORM**: Drizzle ORM for type-safe database operations
+ **Runtime**: Python with FastAPI
+- **Language**: Python
+- **Database ORM**: SQLAlchemy for database operations
 - **Real-time Communication**: WebSocket integration for live updates
 - **Authentication**: Custom username/password authentication with session management
 
