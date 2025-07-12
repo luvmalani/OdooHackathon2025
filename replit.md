@@ -1,13 +1,14 @@
-# Skill Swap Platform
+# TalentTrade Platform
 
 ## Overview
 
-This is a full-stack skill exchange platform built with modern web technologies. The application allows users to discover each other's skills, request skill swaps, and manage their learning/teaching preferences. It features real-time communication, user authentication via Replit Auth, and a comprehensive admin panel.
+This is a full-stack skill exchange platform built with modern web technologies called "TalentTrade". The application allows users to discover each other's skills, request skill swaps, and manage their learning/teaching preferences. It features real-time communication, user authentication via Replit Auth, and a comprehensive admin panel.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Navigation: SkillSwap logo should redirect to landing page when clicked.
+Navigation: TalentTrade logo should redirect to landing page when clicked.
+Branding: Platform name changed from "SkillSwap" to "TalentTrade" with ArrowLeftRight icon instead of ArrowRightLeft.
 
 ## System Architecture
 

@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Bell, ArrowRightLeft } from "lucide-react";
+import { Bell, ArrowLeftRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 
@@ -35,8 +35,8 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <a href="/api/logout" className="flex-shrink-0 flex items-center cursor-pointer hover:opacity-80 transition-opacity">
-              <ArrowRightLeft className="text-primary text-2xl mr-2" />
-              <span className="text-xl font-bold text-gray-900">SkillSwap</span>
+              <ArrowLeftRight className="text-primary text-2xl mr-2" />
+              <span className="text-xl font-bold text-gray-900">TalentTrade</span>
             </a>
           </div>
 

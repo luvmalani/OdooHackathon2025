@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRightLeft, Users, Star, Handshake } from "lucide-react";
+import { ArrowLeftRight, Users, Star, Handshake } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -10,8 +10,8 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <ArrowRightLeft className="text-primary text-2xl mr-2" />
-              <span className="text-xl font-bold text-gray-900">SkillSwap</span>
+              <ArrowLeftRight className="text-primary text-2xl mr-2" />
+              <span className="text-xl font-bold text-gray-900">TalentTrade</span>
             </div>
             <Button asChild>
               <a href="/api/login">Get Started</a>
@@ -24,7 +24,7 @@ export default function Landing() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 sm:text-6xl">
-            ArrowRightLeft Skills,
+            Trade Skills,
             <span className="text-primary"> Expand Knowledge</span>
           </h1>
           <p className="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
@@ -33,7 +33,7 @@ export default function Landing() {
           </p>
           <div className="mt-8">
             <Button size="lg" asChild className="bg-primary hover:bg-blue-600 text-lg px-8 py-3">
-              <a href="/api/login">Start Swapping Skills</a>
+              <a href="/api/login">Start Trading Skills</a>
             </Button>
           </div>
         </div>
