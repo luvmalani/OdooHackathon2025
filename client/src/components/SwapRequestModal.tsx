@@ -24,6 +24,11 @@ export function SwapRequestModal({ targetUser, trigger, open, onOpenChange }: Sw
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Get all available skills for dropdowns
+  const { data: allSkills } = useQuery({
+    queryKey: ['/api/skills'],
+  });
+
   // Get current user's skills
   const { data: userSkillsOffered } = useQuery<SkillWithProficiency[]>({
     queryKey: ['/api/users/skills/offered'],
@@ -108,9 +113,9 @@ export function SwapRequestModal({ targetUser, trigger, open, onOpenChange }: Sw
                 <SelectValue placeholder="Select a skill you offer" />
               </SelectTrigger>
               <SelectContent>
-                {userSkillsOffered?.map((skillOffer) => (
-                  <SelectItem key={skillOffer.id} value={skillOffer.skillId}>
-                    {skillOffer.skill.name} ({skillOffer.proficiencyLevel})
+                {allSkills?.map((skill: any) => (
+                  <SelectItem key={skill.id} value={skill.id}>
+                    {skill.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -124,9 +129,9 @@ export function SwapRequestModal({ targetUser, trigger, open, onOpenChange }: Sw
                 <SelectValue placeholder="Select a skill they offer" />
               </SelectTrigger>
               <SelectContent>
-                {targetUser.skillsOffered?.map((skillOffer) => (
-                  <SelectItem key={skillOffer.id} value={skillOffer.skillId}>
-                    {skillOffer.skill.name} ({skillOffer.proficiencyLevel})
+                {allSkills?.map((skill: any) => (
+                  <SelectItem key={skill.id} value={skill.id}>
+                    {skill.name}
                   </SelectItem>
                 ))}
               </SelectContent>

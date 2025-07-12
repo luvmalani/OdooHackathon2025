@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -201,12 +202,127 @@ export default function ProfileEdit() {
               {/* Location */}
               <div>
                 <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  placeholder="e.g., San Francisco, CA"
-                  {...register("location")}
-                  error={errors.location?.message}
-                />
+                <Select
+                  value={user?.location || ""}
+                  onValueChange={(value) => {
+                    reset({
+                      ...user,
+                      location: value,
+                    });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Mumbai, Maharashtra">Mumbai, Maharashtra</SelectItem>
+                    <SelectItem value="Delhi, Delhi">Delhi, Delhi</SelectItem>
+                    <SelectItem value="Bangalore, Karnataka">Bangalore, Karnataka</SelectItem>
+                    <SelectItem value="Hyderabad, Telangana">Hyderabad, Telangana</SelectItem>
+                    <SelectItem value="Chennai, Tamil Nadu">Chennai, Tamil Nadu</SelectItem>
+                    <SelectItem value="Kolkata, West Bengal">Kolkata, West Bengal</SelectItem>
+                    <SelectItem value="Pune, Maharashtra">Pune, Maharashtra</SelectItem>
+                    <SelectItem value="Ahmedabad, Gujarat">Ahmedabad, Gujarat</SelectItem>
+                    <SelectItem value="Jaipur, Rajasthan">Jaipur, Rajasthan</SelectItem>
+                    <SelectItem value="Surat, Gujarat">Surat, Gujarat</SelectItem>
+                    <SelectItem value="Lucknow, Uttar Pradesh">Lucknow, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Kanpur, Uttar Pradesh">Kanpur, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Nagpur, Maharashtra">Nagpur, Maharashtra</SelectItem>
+                    <SelectItem value="Indore, Madhya Pradesh">Indore, Madhya Pradesh</SelectItem>
+                    <SelectItem value="Thane, Maharashtra">Thane, Maharashtra</SelectItem>
+                    <SelectItem value="Bhopal, Madhya Pradesh">Bhopal, Madhya Pradesh</SelectItem>
+                    <SelectItem value="Visakhapatnam, Andhra Pradesh">Visakhapatnam, Andhra Pradesh</SelectItem>
+                    <SelectItem value="Pimpri-Chinchwad, Maharashtra">Pimpri-Chinchwad, Maharashtra</SelectItem>
+                    <SelectItem value="Patna, Bihar">Patna, Bihar</SelectItem>
+                    <SelectItem value="Vadodara, Gujarat">Vadodara, Gujarat</SelectItem>
+                    <SelectItem value="Ghaziabad, Uttar Pradesh">Ghaziabad, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Ludhiana, Punjab">Ludhiana, Punjab</SelectItem>
+                    <SelectItem value="Agra, Uttar Pradesh">Agra, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Nashik, Maharashtra">Nashik, Maharashtra</SelectItem>
+                    <SelectItem value="Faridabad, Haryana">Faridabad, Haryana</SelectItem>
+                    <SelectItem value="Meerut, Uttar Pradesh">Meerut, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Rajkot, Gujarat">Rajkot, Gujarat</SelectItem>
+                    <SelectItem value="Kalyan-Dombivali, Maharashtra">Kalyan-Dombivali, Maharashtra</SelectItem>
+                    <SelectItem value="Vasai-Virar, Maharashtra">Vasai-Virar, Maharashtra</SelectItem>
+                    <SelectItem value="Varanasi, Uttar Pradesh">Varanasi, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Srinagar, Jammu and Kashmir">Srinagar, Jammu and Kashmir</SelectItem>
+                    <SelectItem value="Aurangabad, Maharashtra">Aurangabad, Maharashtra</SelectItem>
+                    <SelectItem value="Dhanbad, Jharkhand">Dhanbad, Jharkhand</SelectItem>
+                    <SelectItem value="Amritsar, Punjab">Amritsar, Punjab</SelectItem>
+                    <SelectItem value="Navi Mumbai, Maharashtra">Navi Mumbai, Maharashtra</SelectItem>
+                    <SelectItem value="Allahabad, Uttar Pradesh">Allahabad, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Ranchi, Jharkhand">Ranchi, Jharkhand</SelectItem>
+                    <SelectItem value="Howrah, West Bengal">Howrah, West Bengal</SelectItem>
+                    <SelectItem value="Coimbatore, Tamil Nadu">Coimbatore, Tamil Nadu</SelectItem>
+                    <SelectItem value="Jabalpur, Madhya Pradesh">Jabalpur, Madhya Pradesh</SelectItem>
+                    <SelectItem value="Gwalior, Madhya Pradesh">Gwalior, Madhya Pradesh</SelectItem>
+                    <SelectItem value="Vijayawada, Andhra Pradesh">Vijayawada, Andhra Pradesh</SelectItem>
+                    <SelectItem value="Jodhpur, Rajasthan">Jodhpur, Rajasthan</SelectItem>
+                    <SelectItem value="Madurai, Tamil Nadu">Madurai, Tamil Nadu</SelectItem>
+                    <SelectItem value="Raipur, Chhattisgarh">Raipur, Chhattisgarh</SelectItem>
+                    <SelectItem value="Kota, Rajasthan">Kota, Rajasthan</SelectItem>
+                    <SelectItem value="Guwahati, Assam">Guwahati, Assam</SelectItem>
+                    <SelectItem value="Chandigarh, Chandigarh">Chandigarh, Chandigarh</SelectItem>
+                    <SelectItem value="Solapur, Maharashtra">Solapur, Maharashtra</SelectItem>
+                    <SelectItem value="Hubli-Dharwad, Karnataka">Hubli-Dharwad, Karnataka</SelectItem>
+                    <SelectItem value="Bareilly, Uttar Pradesh">Bareilly, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Moradabad, Uttar Pradesh">Moradabad, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Mysore, Karnataka">Mysore, Karnataka</SelectItem>
+                    <SelectItem value="Gurgaon, Haryana">Gurgaon, Haryana</SelectItem>
+                    <SelectItem value="Aligarh, Uttar Pradesh">Aligarh, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Jalandhar, Punjab">Jalandhar, Punjab</SelectItem>
+                    <SelectItem value="Tiruchirappalli, Tamil Nadu">Tiruchirappalli, Tamil Nadu</SelectItem>
+                    <SelectItem value="Bhubaneswar, Odisha">Bhubaneswar, Odisha</SelectItem>
+                    <SelectItem value="Salem, Tamil Nadu">Salem, Tamil Nadu</SelectItem>
+                    <SelectItem value="Mira-Bhayandar, Maharashtra">Mira-Bhayandar, Maharashtra</SelectItem>
+                    <SelectItem value="Warangal, Telangana">Warangal, Telangana</SelectItem>
+                    <SelectItem value="Thiruvananthapuram, Kerala">Thiruvananthapuram, Kerala</SelectItem>
+                    <SelectItem value="Guntur, Andhra Pradesh">Guntur, Andhra Pradesh</SelectItem>
+                    <SelectItem value="Bhiwandi, Maharashtra">Bhiwandi, Maharashtra</SelectItem>
+                    <SelectItem value="Saharanpur, Uttar Pradesh">Saharanpur, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Gorakhpur, Uttar Pradesh">Gorakhpur, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Bikaner, Rajasthan">Bikaner, Rajasthan</SelectItem>
+                    <SelectItem value="Amravati, Maharashtra">Amravati, Maharashtra</SelectItem>
+                    <SelectItem value="Noida, Uttar Pradesh">Noida, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Jamshedpur, Jharkhand">Jamshedpur, Jharkhand</SelectItem>
+                    <SelectItem value="Bhilai, Chhattisgarh">Bhilai, Chhattisgarh</SelectItem>
+                    <SelectItem value="Cuttack, Odisha">Cuttack, Odisha</SelectItem>
+                    <SelectItem value="Firozabad, Uttar Pradesh">Firozabad, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Kochi, Kerala">Kochi, Kerala</SelectItem>
+                    <SelectItem value="Nellore, Andhra Pradesh">Nellore, Andhra Pradesh</SelectItem>
+                    <SelectItem value="Bhavnagar, Gujarat">Bhavnagar, Gujarat</SelectItem>
+                    <SelectItem value="Dehradun, Uttarakhand">Dehradun, Uttarakhand</SelectItem>
+                    <SelectItem value="Durgapur, West Bengal">Durgapur, West Bengal</SelectItem>
+                    <SelectItem value="Asansol, West Bengal">Asansol, West Bengal</SelectItem>
+                    <SelectItem value="Rourkela, Odisha">Rourkela, Odisha</SelectItem>
+                    <SelectItem value="Nanded, Maharashtra">Nanded, Maharashtra</SelectItem>
+                    <SelectItem value="Kolhapur, Maharashtra">Kolhapur, Maharashtra</SelectItem>
+                    <SelectItem value="Ajmer, Rajasthan">Ajmer, Rajasthan</SelectItem>
+                    <SelectItem value="Akola, Maharashtra">Akola, Maharashtra</SelectItem>
+                    <SelectItem value="Gulbarga, Karnataka">Gulbarga, Karnataka</SelectItem>
+                    <SelectItem value="Jamnagar, Gujarat">Jamnagar, Gujarat</SelectItem>
+                    <SelectItem value="Ujjain, Madhya Pradesh">Ujjain, Madhya Pradesh</SelectItem>
+                    <SelectItem value="Loni, Uttar Pradesh">Loni, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Siliguri, West Bengal">Siliguri, West Bengal</SelectItem>
+                    <SelectItem value="Jhansi, Uttar Pradesh">Jhansi, Uttar Pradesh</SelectItem>
+                    <SelectItem value="Ulhasnagar, Maharashtra">Ulhasnagar, Maharashtra</SelectItem>
+                    <SelectItem value="Jammu, Jammu and Kashmir">Jammu, Jammu and Kashmir</SelectItem>
+                    <SelectItem value="Sangli-Miraj & Kupwad, Maharashtra">Sangli-Miraj & Kupwad, Maharashtra</SelectItem>
+                    <SelectItem value="Mangalore, Karnataka">Mangalore, Karnataka</SelectItem>
+                    <SelectItem value="Erode, Tamil Nadu">Erode, Tamil Nadu</SelectItem>
+                    <SelectItem value="Belgaum, Karnataka">Belgaum, Karnataka</SelectItem>
+                    <SelectItem value="Ambattur, Tamil Nadu">Ambattur, Tamil Nadu</SelectItem>
+                    <SelectItem value="Tirunelveli, Tamil Nadu">Tirunelveli, Tamil Nadu</SelectItem>
+                    <SelectItem value="Malegaon, Maharashtra">Malegaon, Maharashtra</SelectItem>
+                    <SelectItem value="Gaya, Bihar">Gaya, Bihar</SelectItem>
+                    <SelectItem value="Jalgaon, Maharashtra">Jalgaon, Maharashtra</SelectItem>
+                    <SelectItem value="Udaipur, Rajasthan">Udaipur, Rajasthan</SelectItem>
+                    <SelectItem value="Maheshtala, West Bengal">Maheshtala, West Bengal</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.location && (
+                  <p className="text-sm text-red-600 mt-1">{errors.location.message}</p>
+                )}
               </div>
 
               {/* Bio */}
