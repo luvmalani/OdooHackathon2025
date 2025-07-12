@@ -126,8 +126,8 @@ This is a full-stack skill exchange platform built with modern web technologies 
 ### Environment Configuration
 - **DATABASE_URL**: PostgreSQL connection string (required)
 - **SESSION_SECRET**: Session encryption key (required)
-- **REPLIT_DOMAINS**: Allowed domains for Replit Auth
-- **ISSUER_URL**: OAuth issuer URL (defaults to Replit)
+- **REP_DOMAINS**: Allowed domains for Auth
+- **ISSUER_URL**: OAuth issuer URL 
 - **NODE_ENV**: Environment mode (development/production)
 
 ### Scaling Considerations
