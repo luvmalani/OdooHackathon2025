@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(240, 10%, 15%);
+  --muted: hsl(210, 40%, 96%);
+  --muted-foreground: hsl(215, 13%, 47%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(240, 10%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(240, 10%, 15%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --primary: hsl(213, 94%, 68%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(210, 40%, 96%);
+  --secondary-foreground: hsl(222, 84%, 5%);
+  --accent: hsl(210, 40%, 96%);
+  --accent-foreground: hsl(222, 84%, 5%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(213, 94%, 68%);
+  --radius: 0.75rem;
+  
+  /* Skill Swap Platform specific colors */
+  --skill-programming: hsl(217, 91%, 60%);
+  --skill-design: hsl(336, 84%, 60%);
+  --skill-marketing: hsl(25, 95%, 53%);
+  --skill-languages: hsl(45, 93%, 47%);
+  --skill-music: hsl(271, 91%, 65%);
+  --skill-business: hsl(220, 13%, 18%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(0, 0%, 95%);
+  --muted: hsl(240, 4%, 16%);
+  --muted-foreground: hsl(240, 5%, 65%);
+  --popover: hsl(240, 10%, 4%);
+  --popover-foreground: hsl(0, 0%, 95%);
+  --card: hsl(240, 10%, 4%);
+  --card-foreground: hsl(0, 0%, 95%);
+  --border: hsl(240, 4%, 16%);
+  --input: hsl(240, 4%, 16%);
+  --primary: hsl(213, 94%, 68%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(240, 4%, 16%);
+  --secondary-foreground: hsl(0, 0%, 95%);
+  --accent: hsl(240, 4%, 16%);
+  --accent-foreground: hsl(0, 0%, 95%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(0, 0%, 95%);
+  --ring: hsl(213, 94%, 68%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground;
+  }
+}
+
+@layer components {
+  /* Skill category specific styling */
+  .skill-programming {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  }
+  
+  .skill-design {
+    @apply bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200;
+  }
+  
+  .skill-marketing {
+    @apply bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200;
+  }
+  
+  .skill-languages {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  
+  .skill-music {
+    @apply bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200;
+  }
+  
+  .skill-business {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+  }
+
+  /* Proficiency level indicators */
+  .proficiency-dots {
+    @apply flex items-center space-x-0.5;
+  }
+  
+  .proficiency-dot {
+    @apply w-1 h-1 rounded-full;
+  }
+  
+  .proficiency-dot.filled {
+    @apply bg-current;
+  }
+  
+  .proficiency-dot.empty {
+    @apply bg-gray-300 dark:bg-gray-600;
+  }
+
+  /* Rating stars */
+  .rating-stars {
+    @apply flex items-center space-x-0.5;
+  }
+  
+  .star-filled {
+    @apply text-yellow-400 fill-current;
+  }
+  
+  .star-empty {
+    @apply text-gray-300 dark:text-gray-600;
+  }
+
+  /* Status badges */
+  .status-pending {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  
+  .status-accepted {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  }
+  
+  .status-completed {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+  
+  .status-rejected {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+  
+  .status-cancelled {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Button variants for skill swap theme */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm transition-colors;
+  }
+
+  /* Form enhancements */
+  .form-input {
+    @apply border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Loading state animations */
+  .pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Notification styles */
+  .notification-dot {
+    @apply absolute -top-1 -right-1 h-3 w-3 rounded-full bg-destructive ring-2 ring-background;
+  }
+
+  /* Responsive grid layouts */
+  .grid-responsive {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+  
+  .grid-responsive-sm {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+  }
+
+  /* Typography improvements */
+  .text-heading {
+    @apply text-2xl font-bold text-foreground;
+  }
+  
+  .text-subheading {
+    @apply text-lg font-semibold text-foreground;
+  }
+  
+  .text-body {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  .text-caption {
+    @apply text-xs text-muted-foreground;
+  }
+
+  /* Spacing utilities */
+  .space-content {
+    @apply space-y-6;
+  }
+  
+  .space-form {
+    @apply space-y-4;
+  }
+  
+  .space-list {
+    @apply space-y-3;
+  }
+
+  /* Focus states */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20;
+  }
+  
+  .glass-dark {
+    @apply bg-black/20 backdrop-blur-lg border border-white/10;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(213, 94%, 68%) 0%, hsl(217, 91%, 60%) 100%);
+  }
+  
+  .gradient-secondary {
+    background: linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(158, 64%, 52%) 100%);
+  }
+
+  /* Text truncation helpers */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Shadow utilities */
+  .shadow-soft {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  
+  .shadow-medium {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .shadow-strong {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+}
