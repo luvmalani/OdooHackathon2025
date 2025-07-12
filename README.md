@@ -8,15 +8,7 @@ Team member email address: malaniluv18@gmail.com
 
 ## Overview
 
-This is a full-stack skill exchange platform built with modern web technologies called "TalentTrade". The application allows users to discover each other's skills, request skill swaps, and manage their learning/teaching preferences. It features real-time communication, user authentication via Replit Auth, and a comprehensive admin panel.
-
-## User Preferences
-
-Preferred communication style: Simple, everyday language.
-Navigation: TalentTrade logo should redirect to landing page when clicked.
-Branding: Platform name changed from "SkillSwap" to "TalentTrade" with ArrowLeftRight icon instead of ArrowRightLeft.
-Authentication: Simple username/password authentication without Replit branding.
-Database: PostgreSQL database instead of Replit native database.
+This is a full-stack skill exchange platform built with modern web technologies called "TalentTrade". The application allows users to discover each other's skills, request skill swaps, and manage their learning/teaching preferences. It features real-time communication, user authentication and a comprehensive admin panel.
 
 ## System Architecture
 
@@ -76,7 +68,7 @@ Database: PostgreSQL database instead of Replit native database.
 ## Data Flow
 
 ### User Registration and Profile Setup
-1. User authenticates via Replit OAuth
+1. User authenticates via OAuth
 2. Profile information is collected and stored
 3. Skills are added to user's offered/wanted lists
 4. User becomes discoverable in the platform
@@ -145,8 +137,8 @@ Database: PostgreSQL database instead of Replit native database.
 ### Environment Configuration
 - **DATABASE_URL**: PostgreSQL connection string (required)
 - **SESSION_SECRET**: Session encryption key (required)
-- **REPLIT_DOMAINS**: Allowed domains for Replit Auth
-- **ISSUER_URL**: OAuth issuer URL (defaults to Replit)
+- ** _DOMAINS**: Allowed domains for   Auth
+- **ISSUER_URL**: OAuth issuer URL (defaults to  )
 - **NODE_ENV**: Environment mode (development/production)
 
 ### Scaling Considerations
