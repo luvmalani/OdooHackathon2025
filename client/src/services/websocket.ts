@@ -20,18 +20,32 @@ export function useWebSocket(onMessage?: (message: WebSocketMessage) => void) {
 
     try {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//${window.location.host}/ws?userId=${user.id}`;
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
       
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
         console.log('WebSocket connected');
         reconnectAttempts.current = 0;
+        
+        // Send authentication token for FastAPI
+        const token = localStorage.getItem('access_token');
+        if (token && wsRef.current) {
+          wsRef.current.send(JSON.stringify({
+            type: 'auth',
+            token: token
+          }));
+        }
       };
 
       wsRef.current.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
+          if (message.type === 'auth_success') {
+            console.log('WebSocket authenticated successfully');
+          } else if (message.type === 'auth_error') {
+            console.error('WebSocket authentication failed:', message);
+          }
           onMessage?.(message);
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
