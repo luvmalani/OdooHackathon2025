@@ -21,7 +21,7 @@ This is a full-stack skill exchange platform built with modern web technologies 
 - **Build Tool**: Vite with custom configuration for development and production
 
 ### Backend Architecture
- **Runtime**: Python with FastAPI
+- **Runtime**: Python with FastAPI
 - **Language**: Python
 - **Database ORM**: SQLAlchemy for database operations
 - **Real-time Communication**: WebSocket integration for live updates
@@ -37,7 +37,7 @@ This is a full-stack skill exchange platform built with modern web technologies 
 ### Authentication System
 - Custom username/password authentication system
 - Session-based authentication with PostgreSQL session storage
-- Secure password hashing using Node.js crypto module
+- Secure password hashing
 - Protected routes and middleware for authenticated endpoints
 - Simple authentication page without external provider branding
 
@@ -68,7 +68,7 @@ This is a full-stack skill exchange platform built with modern web technologies 
 ## Data Flow
 
 ### User Registration and Profile Setup
-1. User authenticates via OAuth
+1. User authenticates via Replit OAuth
 2. Profile information is collected and stored
 3. Skills are added to user's offered/wanted lists
 4. User becomes discoverable in the platform
@@ -95,18 +95,12 @@ This is a full-stack skill exchange platform built with modern web technologies 
 ## External Dependencies
 
 ### Core Dependencies
-- **@neondatabase/serverless**: Neon PostgreSQL serverless driver
-- **drizzle-orm**: Type-safe ORM for database operations
-- **@tanstack/react-query**: Server state management
-- **@radix-ui/***: Accessible UI component primitives
-- **react-hook-form**: Form handling and validation
-- **zod**: Runtime type checking and validation
+- **SQLAlchemy**: SQL toolkit and Object-Relational Mapper
+- **FastAPI**: Modern, fast (high-performance), web framework for building APIs
 
 ### Authentication
-- **openid-client**: OpenID Connect authentication
-- **passport**: Authentication middleware
-- **express-session**: Session management
-- **connect-pg-simple**: PostgreSQL session store
+- **passlib**: Password hashing library
+- **python-jose**: JWT, JWS, JWE, JWK, JWA implementation
 
 ### UI and Styling
 - **tailwindcss**: Utility-first CSS framework
@@ -115,30 +109,25 @@ This is a full-stack skill exchange platform built with modern web technologies 
 - **date-fns**: Date manipulation utilities
 
 ### Development Tools
-- **vite**: Build tool and development server
-- **typescript**: Type checking and development
-- **tsx**: TypeScript execution for Node.js
-- **esbuild**: Fast JavaScript bundler for production
+- **uvicorn**: ASGI server
+- **pytest**: Testing framework
 
 ## Deployment Strategy
 
 ### Development Environment
-- Vite development server with HMR (Hot Module Replacement)
-- Express server running with tsx for TypeScript execution
-- Real-time database schema synchronization with Drizzle
+- Uvicorn server with auto-reloading
+- Real-time database schema synchronization with Alembic
 - WebSocket development support with automatic reconnection
 
 ### Production Build
-- Vite builds optimized React application to `dist/public`
-- esbuild bundles Express server to `dist/index.js`
-- Static file serving from built React application
-- Database migrations applied via Drizzle Kit
+- Gunicorn as a production-ready WSGI server
+- Database migrations applied via Alembic
 
 ### Environment Configuration
 - **DATABASE_URL**: PostgreSQL connection string (required)
 - **SESSION_SECRET**: Session encryption key (required)
-- ** _DOMAINS**: Allowed domains for   Auth
-- **ISSUER_URL**: OAuth issuer URL (defaults to  )
+- **REPLIT_DOMAINS**: Allowed domains for Replit Auth
+- **ISSUER_URL**: OAuth issuer URL (defaults to Replit)
 - **NODE_ENV**: Environment mode (development/production)
 
 ### Scaling Considerations
@@ -146,3 +135,4 @@ This is a full-stack skill exchange platform built with modern web technologies 
 - WebSocket connection pooling for real-time features
 - Session store optimization for high concurrency
 - CDN integration for static asset delivery
+
