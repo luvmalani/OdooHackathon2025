@@ -35,32 +35,26 @@ export function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/">
-              <a className={`font-medium pb-2 transition-colors ${
-                isActive('/') 
-                  ? 'text-primary border-b-2 border-primary' 
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}>
-                Discover
-              </a>
+            <Link href="/" className={`font-medium pb-2 transition-colors ${
+              isActive('/') 
+                ? 'text-primary border-b-2 border-primary' 
+                : 'text-gray-500 hover:text-gray-900'
+            }`}>
+              Discover
             </Link>
-            <Link href="/swaps">
-              <a className={`font-medium pb-2 transition-colors ${
-                isActive('/swaps') 
-                  ? 'text-primary border-b-2 border-primary' 
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}>
-                My Swaps
-              </a>
+            <Link href="/swaps" className={`font-medium pb-2 transition-colors ${
+              isActive('/swaps') 
+                ? 'text-primary border-b-2 border-primary' 
+                : 'text-gray-500 hover:text-gray-900'
+            }`}>
+              My Swaps
             </Link>
-            <Link href="/profile">
-              <a className={`font-medium pb-2 transition-colors ${
-                isActive('/profile') 
-                  ? 'text-primary border-b-2 border-primary' 
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}>
-                Profile
-              </a>
+            <Link href="/profile" className={`font-medium pb-2 transition-colors ${
+              isActive('/profile') 
+                ? 'text-primary border-b-2 border-primary' 
+                : 'text-gray-500 hover:text-gray-900'
+            }`}>
+              Profile
             </Link>
           </nav>
 
@@ -76,14 +70,12 @@ export function Header() {
 
             {/* User Avatar */}
             <Link href="/profile">
-              <a>
-                <Avatar className="h-8 w-8 cursor-pointer">
-                  <AvatarImage src={user?.profileImageUrl} alt="Profile" />
-                  <AvatarFallback className="text-xs">
-                    {getInitials(user?.firstName, user?.lastName)}
-                  </AvatarFallback>
-                </Avatar>
-              </a>
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src={user?.profileImageUrl} alt="Profile" />
+                <AvatarFallback className="text-xs">
+                  {getInitials(user?.firstName, user?.lastName)}
+                </AvatarFallback>
+              </Avatar>
             </Link>
           </div>
         </div>

@@ -67,6 +67,36 @@ export default function Profile() {
       <Header />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Profile Completion Banner */}
+        {(!user.firstName || !user.lastName || !user.location || !user.bio) && (
+          <Card className="mb-6 bg-blue-50 border-blue-200">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900 mb-1">
+                    Complete Your Profile
+                  </h3>
+                  <p className="text-blue-700 text-sm">
+                    Add missing information to help others find and connect with you.
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <Link href="/getting-started">
+                    <Button variant="outline" size="sm" className="text-blue-700 border-blue-300">
+                      Getting Started
+                    </Button>
+                  </Link>
+                  <Link href="/profile/edit">
+                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                      Complete Profile
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Profile Header */}
         <Card className="mb-6">
           <CardContent className="pt-6">
@@ -145,8 +175,13 @@ export default function Profile() {
                   </div>
                 </div>
                 
-                <div className="text-center py-4 text-gray-500">
-                  <p>Add your first skill to start swapping!</p>
+                <div className="text-center py-8 text-gray-500">
+                  <p className="mb-2">No skills added yet</p>
+                  <Link href="/getting-started">
+                    <Button variant="outline" size="sm">
+                      Get Started Guide
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </CardContent>
@@ -184,8 +219,13 @@ export default function Profile() {
                   </div>
                 </div>
                 
-                <div className="text-center py-4 text-gray-500">
-                  <p>Add skills you'd like to learn!</p>
+                <div className="text-center py-8 text-gray-500">
+                  <p className="mb-2">No learning goals set yet</p>
+                  <Link href="/getting-started">
+                    <Button variant="outline" size="sm">
+                      Get Started Guide
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </CardContent>

@@ -11,6 +11,7 @@ import Profile from "@/pages/Profile";
 import ProfileEdit from "@/pages/ProfileEdit";
 import SwapDashboard from "@/pages/SwapDashboard";
 import AdminPanel from "@/pages/AdminPanel";
+import GettingStarted from "@/pages/GettingStarted";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -22,6 +23,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Home} />
+          <Route path="/getting-started" component={GettingStarted} />
           <Route path="/profile" component={Profile} />
           <Route path="/profile/edit" component={ProfileEdit} />
           <Route path="/swaps" component={SwapDashboard} />
